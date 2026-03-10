@@ -1,0 +1,521 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Great+Vibes&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Fuentes específicas para páginas de invitaciones */
+.font-script {
+  font-family: 'Great Vibes', cursive;
+}
+
+.font-playfair {
+  font-family: 'Playfair Display', serif;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --radius: 0.5rem;
+    
+    /* Nueva paleta de colores Coquette */
+    --coquette-rosa-claro: 331 80% 91%;
+    --coquette-rosa-intenso: 322 100% 71%;
+    --coquette-blanco: 0 0% 100%;
+    --coquette-plateado: 0 0% 75%;
+    
+    /* Variaciones Coquette - Rosa Claro */
+    --coquette-rosa-claro-50: 340 100% 98%;
+    --coquette-rosa-claro-100: 340 100% 96%;
+    --coquette-rosa-claro-200: 335 100% 93%;
+    --coquette-rosa-claro-300: 331 80% 91%;
+    --coquette-rosa-claro-400: 331 100% 85%;
+    --coquette-rosa-claro-500: 331 100% 79%;
+    --coquette-rosa-claro-600: 331 70% 68%;
+    --coquette-rosa-claro-700: 331 50% 57%;
+    --coquette-rosa-claro-800: 331 55% 46%;
+    --coquette-rosa-claro-900: 331 70% 35%;
+    
+    /* Variaciones Coquette - Rosa Intenso */
+    --coquette-rosa-intenso-50: 320 100% 97%;
+    --coquette-rosa-intenso-100: 320 100% 94%;
+    --coquette-rosa-intenso-200: 320 100% 88%;
+    --coquette-rosa-intenso-300: 322 100% 79%;
+    --coquette-rosa-intenso-400: 322 100% 71%;
+    --coquette-rosa-intenso-500: 322 100% 62%;
+    --coquette-rosa-intenso-600: 322 94% 52%;
+    --coquette-rosa-intenso-700: 322 100% 42%;
+    --coquette-rosa-intenso-800: 322 100% 34%;
+    --coquette-rosa-intenso-900: 322 100% 26%;
+    
+    /* Nueva paleta de colores Plateado */
+    --plateado-50: 0 0% 97%;
+    --plateado-100: 0 0% 94%;
+    --plateado-200: 0 0% 91%;
+    --plateado-300: 0 0% 85%;
+    --plateado-400: 0 0% 75%;
+    --plateado-500: 0 0% 66%;
+    --plateado-600: 0 0% 56%;
+    --plateado-700: 0 0% 47%;
+    --plateado-800: 0 0% 38%;
+    --plateado-900: 0 0% 28%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    
+    /* Nueva paleta de colores Coquette - Modo Oscuro */
+    --coquette-rosa-claro: 331 70% 35%;
+    --coquette-rosa-intenso: 322 100% 26%;
+    --coquette-blanco: 0 0% 10%;
+    --coquette-plateado: 0 0% 28%;
+    
+    /* Variaciones Coquette - Rosa Claro - Modo Oscuro */
+    --coquette-rosa-claro-50: 331 70% 35%;
+    --coquette-rosa-claro-100: 331 55% 46%;
+    --coquette-rosa-claro-200: 331 50% 57%;
+    --coquette-rosa-claro-300: 331 70% 68%;
+    --coquette-rosa-claro-400: 331 100% 79%;
+    --coquette-rosa-claro-500: 331 100% 85%;
+    --coquette-rosa-claro-600: 331 80% 91%;
+    --coquette-rosa-claro-700: 335 100% 93%;
+    --coquette-rosa-claro-800: 340 100% 96%;
+    --coquette-rosa-claro-900: 340 100% 98%;
+    
+    /* Variaciones Coquette - Rosa Intenso - Modo Oscuro */
+    --coquette-rosa-intenso-50: 322 100% 26%;
+    --coquette-rosa-intenso-100: 322 100% 34%;
+    --coquette-rosa-intenso-200: 322 100% 42%;
+    --coquette-rosa-intenso-300: 322 94% 52%;
+    --coquette-rosa-intenso-400: 322 100% 62%;
+    --coquette-rosa-intenso-500: 322 100% 71%;
+    --coquette-rosa-intenso-600: 322 100% 79%;
+    --coquette-rosa-intenso-700: 320 100% 88%;
+    --coquette-rosa-intenso-800: 320 100% 94%;
+    --coquette-rosa-intenso-900: 320 100% 97%;
+    
+    /* Nueva paleta de colores Plateado - Modo Oscuro */
+    --plateado-50: 0 0% 28%;
+    --plateado-100: 0 0% 38%;
+    --plateado-200: 0 0% 47%;
+    --plateado-300: 0 0% 56%;
+    --plateado-400: 0 0% 66%;
+    --plateado-500: 0 0% 75%;
+    --plateado-600: 0 0% 85%;
+    --plateado-700: 0 0% 91%;
+    --plateado-800: 0 0% 94%;
+    --plateado-900: 0 0% 97%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Hero Carousel Animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in-delay {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 1s ease-out forwards;
+}
+
+.animate-fade-in-delay {
+  animation: fade-in-delay 1s ease-out 0.3s forwards;
+  opacity: 0;
+}
+
+/* Interactive Phone Demo Animations */
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes bounce-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(10px);
+  }
+  60% {
+    transform: scale(1.02) translateY(-2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes pulse-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.6s ease-out forwards;
+}
+
+.animate-bounce-in {
+  animation: bounce-in 0.6s ease-out forwards;
+}
+
+.animate-pulse-in {
+  animation: pulse-in 0.6s ease-out forwards;
+}
+
+/* Utility classes for mobile text truncation */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.font-script {
+  font-family: var(--font-great-vibes);
+}
+
+.font-serif {
+  font-family: var(--font-playfair);
+}
+
+.divider {
+  @apply flex items-center justify-center my-8;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  @apply h-px bg-gray-300 flex-grow mx-4;
+}
+
+.divider-icon {
+  @apply text-primary flex items-center justify-center;
+}
+
+.divider-icon svg {
+  @apply w-8 h-8;
+}
+
+.section-title {
+  @apply text-primary text-3xl md:text-4xl font-medium text-center mb-6;
+}
+
+.section-subtitle {
+  @apply text-foreground text-xl text-center mb-8;
+}
+
+.animate-fade-in {
+  animation: fadeIn 1s ease-in-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 1s ease-in-out;
+}
+
+.animate-slide-down {
+  animation: slideDown 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.scroll-indicator {
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-20px);
+  }
+  60% {
+    transform: translateY(-10px);
+  }
+}
+
+/* VIP-specific styles actualizados con tema coquette */
+.vip-glow {
+  box-shadow: 0 0 20px rgba(255, 105, 180, 0.4);
+}
+
+.vip-border {
+  border-image: linear-gradient(45deg, #FF69B4, #FFD1DC) 1;
+}
+
+.vip-text-gradient {
+  background: linear-gradient(45deg, #FF69B4, #FFD1DC);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@keyframes vip-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.vip-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 105, 180, 0.5),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: vip-shimmer 3s infinite;
+}
+
+/* Nuevas clases CSS para el tema Coquette */
+.coquette-gradient {
+  background: linear-gradient(135deg, #FFD1DC, #FF69B4, #C0C0C0);
+}
+
+.coquette-rosa-gradient {
+  background: linear-gradient(135deg, #FFD1DC, #FF69B4);
+}
+
+.coquette-text-gradient {
+  background: linear-gradient(135deg, #FF69B4, #FFD1DC);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.plateado-gradient {
+  background: linear-gradient(135deg, #C0C0C0, #f0f0f0, #e8e8e8);
+}
+
+.coquette-plateado-gradient {
+  background: linear-gradient(135deg, #FFD1DC, #C0C0C0, #f0f0f0);
+}
+
+.coquette-shadow {
+  box-shadow: 0 4px 14px 0 rgba(255, 105, 180, 0.25);
+}
+
+.coquette-rosa-claro-shadow {
+  box-shadow: 0 4px 14px 0 rgba(255, 209, 220, 0.3);
+}
+
+.plateado-shadow {
+  box-shadow: 0 4px 14px 0 rgba(192, 192, 192, 0.25);
+}
+
+@keyframes coquette-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.coquette-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 105, 180, 0.4),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: coquette-shimmer 3s infinite;
+}
+
+@keyframes coquette-rosa-claro-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.coquette-rosa-claro-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 209, 220, 0.4),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: coquette-rosa-claro-shimmer 3s infinite;
+}
+
+@keyframes plateado-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.plateado-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(192, 192, 192, 0.4),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: plateado-shimmer 3s infinite;
+}
+
+/* Efectos adicionales coquette */
+@keyframes coquette-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+.coquette-pulse {
+  animation: coquette-pulse 2s ease-in-out infinite;
+}
+
+@keyframes coquette-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.coquette-float {
+  animation: coquette-float 3s ease-in-out infinite;
+}
+
+@keyframes coquette-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(255, 105, 180, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 105, 180, 0.6), 0 0 30px rgba(255, 209, 220, 0.4);
+  }
+}
+
+.coquette-glow {
+  animation: coquette-glow 2s ease-in-out infinite;
+}
+
+/* Efectos hover mejorados */
+.coquette-hover-lift {
+  transition: all 0.3s ease;
+}
+
+.coquette-hover-lift:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(255, 105, 180, 0.3);
+}
+
+.coquette-hover-glow {
+  transition: all 0.3s ease;
+}
+
+.coquette-hover-glow:hover {
+  box-shadow: 0 0 15px rgba(255, 105, 180, 0.5);
+  border-color: rgba(255, 105, 180, 0.6);
+}
+
