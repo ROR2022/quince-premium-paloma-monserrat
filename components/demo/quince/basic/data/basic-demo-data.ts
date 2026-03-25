@@ -17,7 +17,7 @@ export const basicDemoData = {
   hero: {
   name: "Paloma Monserrat",
     subtitle: "¡Mis XV años!",
-    backgroundImage: "/images/quince/quince1.jpeg"
+    backgroundImage: "/images/quince/paloma01.jpeg"
   },
   
   event: {

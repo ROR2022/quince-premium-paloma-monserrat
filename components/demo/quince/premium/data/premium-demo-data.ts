@@ -9,17 +9,11 @@ export const premiumDemoData = {
   hero: {
     ...basicDemoData.hero,
     backgroundImages: [
-      "/images/quince/quince1.jpeg",
-      "/images/quince/quince2.jpeg",
-      "/images/quince/quince3.jpeg",
-      "/images/quince/quince4.jpeg",
+      "/images/paloma02.jpeg",
     ],
     // Imágenes optimizadas para móviles (utilizamos las mismas pero se pueden reemplazar por versiones específicas)
     mobileBackgroundImages: [
-      "/images/quince/quince1.jpeg",
-      "/images/quince/quince2.jpeg",
-      "/images/quince/quince3.jpeg",
-      "/images/quince/quince4.jpeg",
+      "/images/paloma02.jpeg",
     ],
     carouselOptions: {
       delay: 5000, // tiempo entre cambios de imagen (5 segundos)
@@ -88,29 +82,18 @@ Enrique Arteaga Talamantes
     description: "Una colección de mis fotos favoritas preparándome para este gran día",
     images: [
       { 
-        src: "/images/quince/quince1.jpeg", 
-        alt: "Pamela Kitana - Sesión fotográfica 1", 
-        caption: "Preparándome para este día especial",
+        src: "/images/paloma01.jpeg", 
+        alt: "Paloma Monserrat - Sesión fotográfica 1", 
+        caption: "",
         category: "preparacion"
       },
       { 
-        src: "/images/quince/quince2.jpeg", 
-        alt: "Pamela Kitana - Sesión fotográfica 2", 
-        caption: "Con mi vestido soñado",
+        src: "/images/paloma02.jpeg", 
+        alt: "Paloma Monserrat - Sesión fotográfica 2", 
+        caption: "",
         category: "vestido"
       },
-      { 
-        src: "/images/quince/quince3.jpeg", 
-        alt: "Pamela Kitana - Sesión fotográfica 3", 
-        caption: "Momento de alegría",
-        category: "alegria"
-      },
-      { 
-        src: "/images/quince/quince4.jpeg", 
-        alt: "Pamela Kitana - Sesión fotográfica 4", 
-        caption: "Lista para celebrar",
-        category: "celebracion"
-      }
+      
     ]
   },
   
