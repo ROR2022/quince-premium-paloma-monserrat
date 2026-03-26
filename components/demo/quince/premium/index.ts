@@ -1,5 +1,6 @@
 // Componentes premium exclusivos
 export { PremiumHero } from './PremiumHero'
+export { PremiumQRSection } from './PremiumQRSection'
 export { PremiumInvitation } from './PremiumInvitation'
 export { PremiumPadrinos } from './PremiumPadrinos'
 export { PremiumGallery } from './PremiumGallery'

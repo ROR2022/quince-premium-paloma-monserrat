@@ -4,6 +4,7 @@ import { PremiumInvitation } from '@/components/demo/quince/premium'
 import { BasicCountdown } from '@/components/demo/quince/basic'
 import { BasicEventDetails } from '@/components/demo/quince/basic'
 import { PremiumGallery } from '@/components/demo/quince/premium'
+import { PremiumQRSection } from '@/components/demo/quince/premium'
 import { PremiumPadrinos } from '@/components/demo/quince/premium'
 import { BasicAttendance } from '@/components/demo/quince/basic'
 import { BasicGiftOptions } from '@/components/demo/quince/basic'
@@ -27,6 +28,7 @@ export default function LandingPage() {
       
       {/* Características premium exclusivas */}
       <PremiumGallery />
+      <PremiumQRSection />
       <PremiumPadrinos />
       
       {/* Confirmación y regalos (reutilizados del básico) */}

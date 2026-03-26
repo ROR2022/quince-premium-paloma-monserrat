@@ -1,0 +1,1 @@
+export { FotoUploader } from './FotoUploader'

@@ -1,0 +1,62 @@
+import mongoose from 'mongoose';
+
+const MONGODB_URI = process.env.MONGODB_URI!;
+
+if (!MONGODB_URI) {
+  throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
+}
+
+interface CachedConnection {
+  conn: typeof mongoose | null;
+  promise: Promise<typeof mongoose> | null;
+}
+
+declare global {
+  var mongoose: CachedConnection | undefined;
+}
+
+let cached = global.mongoose;
+
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
+
+async function connectDB() {
+  if (!cached) {
+    cached = global.mongoose = { conn: null, promise: null };
+  }
+
+  if (cached.conn) {
+    return cached.conn;
+  }
+
+  if (!cached.promise) {
+    // Windows stub DNS (127.0.0.1) rechaza queries SRV. Lo forzamos aquí,
+    // dentro de la función, para que aplique en el contexto exacto del driver.
+    if (process.env.NODE_ENV !== 'production') {
+      const dns = require('dns');
+      dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
+    }
+
+    const opts = {
+      bufferCommands: false,
+    };
+
+    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+      console.log('✅ MongoDB connected successfully');
+      return mongoose;
+    });
+  }
+
+  try {
+    cached.conn = await cached.promise;
+  } catch (e) {
+    cached.promise = null;
+    console.error('❌ MongoDB connection error:', e);
+    throw e;
+  }
+
+  return cached.conn;
+}
+
+export default connectDB;

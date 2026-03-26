@@ -1,0 +1,1 @@
+export { DinamicGallery } from './DinamicGallery'

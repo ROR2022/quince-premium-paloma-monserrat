@@ -2,10 +2,12 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useInView } from 'framer-motion'
-import { ChevronLeft, ChevronRight, X, Camera } from 'lucide-react'
+import { ChevronLeft, ChevronRight, X, Camera, Images } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useIsClient } from "@/hooks/useIsClient"
 import { premiumDemoData } from "./data/premium-demo-data"
+import { GALERIA_CONFIG } from '@/config/galeria.config'
 
 export function PremiumGallery() {
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -176,15 +178,15 @@ export function PremiumGallery() {
           )}
         </div>
 
-        {/* Nota del demo premium */}
-        <div 
-        style={{
-          display:'none'
-        }}
-        className="mt-8 p-4 bg-coquette-rosa-claro-50 rounded-lg border border-plateado-200 max-w-2xl mx-auto">
-          <p className="text-sm text-coquette-rosa-intenso-700">
-            💎 <strong>Premium:</strong> Galería de fotos interactiva con captions personalizados y navegación elegante.
-          </p>
+        {/* Botón: ver galería colaborativa */}
+        <div className="mt-8 text-center">
+          <Link
+            href={GALERIA_CONFIG.pages.gallery}
+            className="inline-flex items-center gap-2 border border-coquette-rosa-intenso-400 text-coquette-rosa-intenso-600 px-5 py-2.5 rounded-full text-sm font-medium hover:bg-coquette-rosa-intenso-50 transition-all"
+          >
+            <Images className="w-4 h-4" />
+            Ver todas las fotos del evento →
+          </Link>
         </div>
       </div>
 
