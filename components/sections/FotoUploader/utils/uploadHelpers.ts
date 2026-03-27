@@ -15,7 +15,9 @@ export async function uploadToCloudinary(
   const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
 
   if (!cloudName || !uploadPreset) {
-    throw new Error('Cloudinary no configurado (NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME / UPLOAD_PRESET)')
+    const msg = 'Cloudinary no configurado (NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME / UPLOAD_PRESET)'
+    await logClientError('uploadToCloudinary:config', msg, { cloudName: !!cloudName, uploadPreset: !!uploadPreset })
+    throw new Error(msg)
   }
 
   const results = []
@@ -33,8 +35,18 @@ export async function uploadToCloudinary(
     )
 
     if (!res.ok) {
-      const err = await res.json().catch(() => ({}))
-      throw new Error(err.error?.message ?? 'Error al subir a Cloudinary')
+      const errBody = await res.json().catch(() => ({}))
+      const msg = errBody.error?.message ?? `HTTP ${res.status} de Cloudinary`
+      await logClientError('uploadToCloudinary:response', msg, {
+        status: res.status,
+        cloudName,
+        uploadPreset,
+        fileName: file.name,
+        fileSize: file.size,
+        fileType: file.type,
+        cloudinaryError: errBody,
+      })
+      throw new Error(msg)
     }
 
     const data = await res.json()
@@ -47,6 +59,19 @@ export async function uploadToCloudinary(
   }
 
   return results
+}
+
+/** Envía un error del cliente a /api/log-client-error para verlo en Vercel logs. */
+async function logClientError(context: string, message: string, details?: object) {
+  try {
+    await fetch('/api/log-client-error', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ context, message, details }),
+    })
+  } catch {
+    // silencioso — no queremos que el log falle el flujo principal
+  }
 }
 
 /** Sube un archivo al almacenamiento local (fallback). */

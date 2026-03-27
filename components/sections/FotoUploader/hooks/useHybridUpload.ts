@@ -59,7 +59,7 @@ export function useHybridUpload() {
         continue
       }
 
-      // 3. Subir a Cloudinary (con fallback local)
+      // 3. Subir a Cloudinary (direct upload — sin pasar por Vercel)
       updateFileProgress(i, { status: 'uploading', progress: 50 })
       let cloudinaryResult = null
       let localResult      = null
@@ -67,8 +67,23 @@ export function useHybridUpload() {
       try {
         const results  = await uploadToCloudinary([compressed], uploaderName)
         cloudinaryResult = results[0]
-      } catch {
-        // Fallback local
+      } catch (cloudErr) {
+        const cloudMsg = cloudErr instanceof Error ? cloudErr.message : 'Error Cloudinary'
+        console.error('[useHybridUpload] Cloudinary direct upload falló:', cloudMsg)
+
+        // Fallback local SOLO si el archivo es pequeño (< 4 MB).
+        // Archivos más grandes causarían 413 en Vercel — mejor mostrar el error real.
+        const VERCEL_SAFE_BYTES = 4 * 1024 * 1024
+        if (compressed.size > VERCEL_SAFE_BYTES) {
+          updateFileProgress(i, {
+            status: 'error',
+            error: `Error al subir: ${cloudMsg}. Intenta con una foto más pequeña.`,
+            progress: 100,
+          })
+          continue
+        }
+
+        // Fallback local (solo dev / fotos pequeñas)
         try {
           localResult = await uploadToLocal(compressed, uploaderName)
         } catch (localErr) {
