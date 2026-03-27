@@ -36,7 +36,7 @@ export function PhotoDetailModal({ photo, photos, onClose, onNavigate }: Props) 
   }, [onClose, goNext, goPrev])
 
   const displayUrl = photo.cloudinaryUrl
-    ? photo.cloudinaryUrl.replace('/upload/', '/upload/f_auto,q_best,w_1920/')
+    ? photo.cloudinaryUrl.replace('/upload/', '/upload/f_auto,q_auto,w_1920/')
     : photo.localPath ?? '/placeholder.svg'
 
   const timeAgo = formatDistanceToNow(new Date(photo.uploadedAt), { addSuffix: true, locale: es })
@@ -47,7 +47,7 @@ export function PhotoDetailModal({ photo, photos, onClose, onNavigate }: Props) 
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-5xl max-h-[90vh] flex flex-col"
+        className="relative w-full max-w-5xl flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Barra superior */}
@@ -68,13 +68,14 @@ export function PhotoDetailModal({ photo, photos, onClose, onNavigate }: Props) 
         </div>
 
         {/* Imagen */}
-        <div className="relative flex-1 min-h-0" style={{ height: '75vh' }}>
+        <div className="relative w-full" style={{ height: '72vh' }}>
           <Image
             src={displayUrl}
             alt={`Foto de ${photo.uploader.name}`}
             fill
             className="object-contain"
             sizes="100vw"
+            priority
           />
         </div>
 
