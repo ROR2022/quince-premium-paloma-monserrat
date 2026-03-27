@@ -18,14 +18,12 @@ export async function POST(request: NextRequest) {
     const tag   = `[CLIENT:${level.toUpperCase()}]`
     const logFn = level === 'info' ? console.log : level === 'warn' ? console.warn : console.error
 
-    logFn(`${tag} ⏱ ${timestamp}`)
-    logFn(`${tag} 📌 context : ${context}`)
-    logFn(`${tag} 💬 message : ${message}`)
-    if (Object.keys(details).length > 0) {
-      logFn(`${tag} 🔎 details :`, JSON.stringify(details, null, 2))
-    }
-    logFn(`${tag} 📱 ua      : ${ua.slice(0, 140)}`)
-    logFn(`${tag} 🌐 ip      : ${ip}`)
+    // Un único log por request — Vercel muestra TODO en la vista de resumen
+    logFn(
+      `${tag} | ${timestamp} | ctx=${context} | ${message}`,
+      Object.keys(details).length > 0 ? JSON.stringify(details) : '',
+      `| ua=${ua.slice(0, 100)} | ip=${ip}`
+    )
 
     return NextResponse.json({ received: true })
   } catch {
