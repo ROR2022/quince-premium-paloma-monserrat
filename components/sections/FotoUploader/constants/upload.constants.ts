@@ -9,9 +9,10 @@ export const UPLOAD_CONFIG = {
   allowedMimeTypes:  ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'] as string[],
   allowedExtensions: ['.jpg', '.jpeg', '.png', '.webp', '.heic', '.heif'] as string[],
   compression: {
-    maxWidth:  4000,
-    maxHeight: 4000,
-    quality:   0.8,
+    /** 2048px = 2x retina en cualquier pantalla mobile/desktop. Produce WebP < 2 MB. */
+    maxWidth:  2048,
+    maxHeight: 2048,
+    quality:   0.82,
   },
   endpoints: {
     cloudinary: '/api/upload-fotos-cloudinary',
