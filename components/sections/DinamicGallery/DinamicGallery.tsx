@@ -124,11 +124,11 @@ export function DinamicGallery() {
                       <p className="text-xs text-gray-400">{timeAgo}</p>
                     </div>
 
-                    {/* Botón eliminar */}
+                    {/* Botón eliminar — siempre visible en touch, hover en desktop */}
                     <button
                       onClick={() => setConfirmDeleteId(photo._id)}
                       disabled={isDeleting}
-                      className="absolute top-2 right-2 bg-white/80 hover:bg-red-500 hover:text-white text-gray-500 p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-all shadow"
+                      className="absolute top-2 right-2 bg-white/80 hover:bg-red-500 hover:text-white text-gray-500 p-2 rounded-full transition-all shadow sm:opacity-0 sm:group-hover:opacity-100 opacity-100"
                       aria-label="Eliminar foto"
                     >
                       {isDeleting

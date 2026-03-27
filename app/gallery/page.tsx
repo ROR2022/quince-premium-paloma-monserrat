@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { Home, Camera } from 'lucide-react'
 import { GALERIA_CONFIG } from '@/config/galeria.config'
 import { DinamicGallery } from '@/components/sections/DinamicGallery'
 
@@ -10,22 +11,29 @@ export const metadata: Metadata = {
 export default function GalleryPage() {
   return (
     <>
-      <DinamicGallery />
-      {/* Links de navegación fijos en la parte inferior */}
-      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 flex gap-3 z-40">
-        <Link
-          href={GALERIA_CONFIG.pages.upload}
-          className="bg-primary text-primary-foreground px-4 py-2.5 rounded-full text-xs font-medium shadow-lg hover:opacity-90 transition-all"
-        >
-          📸 Subir fotos
-        </Link>
+      {/* Padding inferior para que el contenido no quede bajo la barra */}
+      <div className="pb-20">
+        <DinamicGallery />
+      </div>
+
+      {/* Barra de navegación fija — diseño mobile-first */}
+      <nav className="fixed bottom-0 left-0 right-0 z-40 flex border-t border-border bg-background/95 backdrop-blur-sm">
         <Link
           href={GALERIA_CONFIG.pages.home}
-          className="bg-background text-primary border border-border px-4 py-2.5 rounded-full text-xs font-medium shadow-lg hover:bg-muted transition-all"
+          className="flex flex-1 flex-col items-center justify-center gap-1 py-3 text-muted-foreground hover:text-primary transition-colors"
         >
-          ← Invitación
+          <Home className="w-5 h-5" />
+          <span className="text-xs font-medium">Inicio</span>
         </Link>
-      </div>
+
+        <Link
+          href={GALERIA_CONFIG.pages.upload}
+          className="flex flex-1 flex-col items-center justify-center gap-1 py-3 bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
+        >
+          <Camera className="w-5 h-5" />
+          <span className="text-xs font-medium">Subir fotos</span>
+        </Link>
+      </nav>
     </>
   )
 }
