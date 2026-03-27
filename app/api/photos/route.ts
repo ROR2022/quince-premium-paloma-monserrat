@@ -54,8 +54,14 @@ export async function GET(request: NextRequest) {
 // ─── POST /api/photos ────────────────────────────────────────────────────────
 // Registra los metadatos de una foto ya subida a Cloudinary o almacenamiento local.
 export async function POST(request: NextRequest) {
+  const ua = request.headers.get('user-agent') ?? 'unknown'
+  const ip = request.headers.get('x-forwarded-for') ?? 'unknown'
+  console.log(`[photos POST] Solicitud de registro | ip=${ip} | ua=${ua}`)
+
   try {
+    console.log('[photos POST] Conectando a MongoDB...')
     await connectDB()
+    console.log('[photos POST] MongoDB OK')
 
     const body = await request.json()
 
@@ -74,7 +80,12 @@ export async function POST(request: NextRequest) {
       comment = '',
     } = body
 
+    const sizeMB = fileSize ? (fileSize / 1024 / 1024).toFixed(2) : 'n/a'
+    console.log(`[photos POST] Datos recibidos: filename=${filename} | source=${uploadSource} | size=${sizeMB}MB | uploader=${uploader?.name} | cloudinaryUrl=${cloudinaryUrl ?? 'null'}`)
+
     if (!filename || !originalName || !uploadSource || !fileSize || !mimeType) {
+      const missing = { filename: !filename, originalName: !originalName, uploadSource: !uploadSource, fileSize: !fileSize, mimeType: !mimeType }
+      console.warn('[photos POST] Campos obligatorios faltantes:', missing)
       return NextResponse.json(
         { success: false, error: 'Faltan campos obligatorios' },
         { status: 400 }
@@ -103,9 +114,10 @@ export async function POST(request: NextRequest) {
       comment,
     })
 
+    console.log(`[photos POST] ✅ Foto registrada en DB: _id=${photo._id} | publicId=${photo.cloudinaryId ?? 'local'}`)
     return NextResponse.json({ success: true, photo }, { status: 201 })
   } catch (error) {
-    console.error('[POST /api/photos]', error)
+    console.error('[photos POST] ❌ Error general:', error)
     return NextResponse.json(
       { success: false, error: 'Error al registrar la foto' },
       { status: 500 }
