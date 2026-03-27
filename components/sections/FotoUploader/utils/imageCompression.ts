@@ -1,4 +1,5 @@
 import { UPLOAD_CONFIG } from '../constants/upload.constants'
+import { serverLogSync, fmtBytes } from './debugLogger'
 
 /**
  * Comprime una imagen usando Canvas API (nativa del browser, sin dependencias).
@@ -6,6 +7,13 @@ import { UPLOAD_CONFIG } from '../constants/upload.constants'
  */
 export async function compressImage(file: File): Promise<File> {
   const { maxWidth, maxHeight, quality } = UPLOAD_CONFIG.compression
+
+  serverLogSync('info', 'compress:start', 'Iniciando compresión', {
+    name:    file.name,
+    size:    fmtBytes(file.size),
+    type:    file.type,
+    lastMod: new Date(file.lastModified).toISOString(),
+  })
 
   return new Promise((resolve, reject) => {
     const img = new Image()
@@ -15,6 +23,8 @@ export async function compressImage(file: File): Promise<File> {
       URL.revokeObjectURL(img.src)
 
       let { width, height } = img
+      const origW = width
+      const origH = height
 
       // Redimensionar manteniendo proporción
       if (width > maxWidth || height > maxHeight) {
@@ -23,13 +33,22 @@ export async function compressImage(file: File): Promise<File> {
         height = Math.round(height * ratio)
       }
 
+      serverLogSync('info', 'compress:dimensions', 'Dimensiones calculadas', {
+        original:  `${origW}×${origH}`,
+        scaled:    `${width}×${height}`,
+        limitCfg:  `${maxWidth}×${maxHeight}`,
+        didResize: origW !== width || origH !== height,
+      })
+
       const canvas = document.createElement('canvas')
       canvas.width  = width
       canvas.height = height
 
       const ctx = canvas.getContext('2d')
       if (!ctx) {
-        reject(new Error('No se pudo obtener el contexto del canvas'))
+        const msg = 'No se pudo obtener el contexto del canvas'
+        serverLogSync('error', 'compress:no-ctx', msg, { width, height })
+        reject(new Error(msg))
         return
       }
 
@@ -38,11 +57,27 @@ export async function compressImage(file: File): Promise<File> {
       canvas.toBlob(
         (blob) => {
           if (!blob) {
+            const msg = 'canvas.toBlob devolvió null'
+            serverLogSync('error', 'compress:blob-null', msg, {
+              file: file.name,
+              canvasW: width,
+              canvasH: height,
+              quality,
+            })
             reject(new Error('No se pudo comprimir la imagen'))
             return
           }
           const compressedName = file.name.replace(/\.[^.]+$/, '.webp')
-          resolve(new File([blob], compressedName, { type: 'image/webp' }))
+          const resultFile = new File([blob], compressedName, { type: 'image/webp' })
+
+          serverLogSync('info', 'compress:done', 'Compresión completada', {
+            outputName: compressedName,
+            outputSize: fmtBytes(blob.size),
+            outputType: 'image/webp',
+            ratio:      `${((1 - blob.size / file.size) * 100).toFixed(1)}% reducción`,
+          })
+
+          resolve(resultFile)
         },
         'image/webp',
         quality
@@ -51,7 +86,13 @@ export async function compressImage(file: File): Promise<File> {
 
     img.onerror = () => {
       URL.revokeObjectURL(img.src)
-      reject(new Error('No se pudo cargar la imagen para compresión'))
+      const msg = 'No se pudo cargar la imagen para compresión'
+      serverLogSync('error', 'compress:img-error', msg, {
+        file: file.name,
+        type: file.type,
+        size: fmtBytes(file.size),
+      })
+      reject(new Error(msg))
     }
   })
 }
