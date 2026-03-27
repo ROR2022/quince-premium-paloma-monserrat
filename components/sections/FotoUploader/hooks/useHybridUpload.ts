@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
 import { compressImage } from '../utils/imageCompression'
-import { validateImageFile } from '../utils/imageValidation'
+import { validateImageFile, validateCompressedFile } from '../utils/imageValidation'
 import { uploadToCloudinary, uploadToLocal, registerPhotoInDB, buildUploadResult } from '../utils/uploadHelpers'
 import { UPLOAD_CONFIG } from '../constants/upload.constants'
 
@@ -43,13 +43,20 @@ export function useHybridUpload() {
         continue
       }
 
-      // 2. Comprimir
+      // 2. Comprimir (siempre — aunque la foto sea pequeña)
       updateFileProgress(i, { status: 'compressing', progress: 20 })
       let compressed: File
       try {
         compressed = await compressImage(file)
       } catch {
         compressed = file // si falla la compresión, usar el original
+      }
+
+      // 2b. Validar tamaño post-compresión (límite Vercel 4.5 MB)
+      const postValidation = validateCompressedFile(compressed)
+      if (!postValidation.valid) {
+        updateFileProgress(i, { status: 'error', error: postValidation.error, progress: 100 })
+        continue
       }
 
       // 3. Subir a Cloudinary (con fallback local)

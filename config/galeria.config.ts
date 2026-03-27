@@ -17,6 +17,9 @@ export const GALERIA_CONFIG = {
 
   upload: {
     maxFiles: 10,
+    /** Límite de intake ANTES de comprimir. La compresión puede llevar 20MB → ~2MB WebP.
+     *  El servidor tiene su propio límite post-compresión (4.5 MB, Vercel). */
+    rawIntakeLimitMB: 50,
     maxFileSizeMB: 4.5,
     uploaderLabel: '¿Cómo te llamas?',
     uploaderPlaceholder: 'Tu nombre',
