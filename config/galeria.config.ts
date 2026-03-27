@@ -26,6 +26,8 @@ export const GALERIA_CONFIG = {
     successMessage: '¡Fotos subidas exitosamente! Gracias por compartir.',
     /** Milisegundos antes de resetear el formulario tras éxito */
     resetDelayMs: 10000,
+    /** Carpeta destino en Cloudinary — debe coincidir con CLOUDINARY_FOLDER en .env */
+    cloudinaryFolder: 'paloma-monserrat-quince',
   },
 
   gallery: {

@@ -1,27 +1,52 @@
 import { UPLOAD_CONFIG } from '../constants/upload.constants'
 import { UploadResult } from '../types/upload.types'
+import { GALERIA_CONFIG } from '@/config/galeria.config'
 
-/** Sube archivos a Cloudinary via la API route. */
+/**
+ * Sube un archivo directamente a Cloudinary desde el browser (unsigned upload).
+ * El archivo NUNCA pasa por Vercel — elimina el límite de 4.5 MB por completo.
+ * Requiere: NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME y NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
+ */
 export async function uploadToCloudinary(
   files: File[],
   uploaderName: string
 ): Promise<{ publicId: string; secureUrl: string; width: number; height: number }[]> {
-  const formData = new FormData()
-  files.forEach((f) => formData.append('files', f))
-  formData.append('uploaderName', uploaderName)
+  const cloudName    = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+  const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
 
-  const res = await fetch(UPLOAD_CONFIG.endpoints.cloudinary, {
-    method: 'POST',
-    body:   formData,
-  })
-
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}))
-    throw new Error(err.error ?? 'Error al subir a Cloudinary')
+  if (!cloudName || !uploadPreset) {
+    throw new Error('Cloudinary no configurado (NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME / UPLOAD_PRESET)')
   }
 
-  const data = await res.json()
-  return data.uploadResults
+  const results = []
+
+  for (const file of files) {
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('upload_preset', uploadPreset)
+    formData.append('folder', GALERIA_CONFIG.upload.cloudinaryFolder)
+    formData.append('context', `uploader=${uploaderName}`)
+
+    const res = await fetch(
+      `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+      { method: 'POST', body: formData }
+    )
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}))
+      throw new Error(err.error?.message ?? 'Error al subir a Cloudinary')
+    }
+
+    const data = await res.json()
+    results.push({
+      publicId:  data.public_id,
+      secureUrl: data.secure_url,
+      width:     data.width,
+      height:    data.height,
+    })
+  }
+
+  return results
 }
 
 /** Sube un archivo al almacenamiento local (fallback). */
