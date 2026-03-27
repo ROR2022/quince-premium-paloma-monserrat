@@ -10,7 +10,8 @@ import { QRCode } from '@/components/sections/QRCode'
  * El componente QRCode que renderiza sí es del núcleo portátil.
  */
 export function PremiumQRSection() {
-  const qrUrl = `${process.env.NEXT_PUBLIC_BASE_URL ?? ''}${GALERIA_CONFIG.pages.upload}`
+  const base = (process.env.NEXT_PUBLIC_BASE_URL ?? '').replace(/\/$/, '')
+  const qrUrl = `${base}${GALERIA_CONFIG.pages.upload}`
 
   return (
     <section className="py-16 px-4 bg-gradient-to-br from-coquette-rosa-intenso-50 to-coquette-rosa-claro-100">
