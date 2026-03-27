@@ -3,6 +3,11 @@ import { UploadResult } from '../types/upload.types'
 import { GALERIA_CONFIG } from '@/config/galeria.config'
 import { serverLog, fmtBytes } from './debugLogger'
 
+const MAX_RETRIES      = 2
+const RETRY_DELAY_MS   = 2000
+
+const sleep = (ms: number) => new Promise<void>(r => setTimeout(r, ms))
+
 /**
  * Sube un archivo directamente a Cloudinary desde el browser (unsigned upload).
  * El archivo NUNCA pasa por Vercel — elimina el límite de 4.5 MB por completo.
@@ -10,7 +15,8 @@ import { serverLog, fmtBytes } from './debugLogger'
  */
 export async function uploadToCloudinary(
   files: File[],
-  uploaderName: string
+  uploaderName: string,
+  onRetry?: () => void,
 ): Promise<{ publicId: string; secureUrl: string; width: number; height: number }[]> {
   const cloudName    = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
   const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
@@ -50,21 +56,44 @@ export async function uploadToCloudinary(
     formData.append('folder', folder)
     formData.append('context', `uploader=${uploaderName}`)
 
-    let res: Response
-    try {
-      res = await fetch(
-        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-        { method: 'POST', body: formData }
-      )
-    } catch (fetchErr) {
-      const msg = fetchErr instanceof Error ? fetchErr.message : 'fetch falló'
-      await serverLog('error', 'cloudinary:fetch-error', 'Error de red al conectar con Cloudinary', {
-        error:    msg,
-        file:     file.name,
-        endpoint: `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-      })
-      throw new Error(`Error de red: ${msg}`)
+    let res: Response | undefined
+    for (let attempt = 1; attempt <= MAX_RETRIES + 1; attempt++) {
+      // Recrear FormData en cada intento (el stream puede haberse consumido)
+      const fd = new FormData()
+      fd.append('file', file)
+      fd.append('upload_preset', uploadPreset)
+      fd.append('folder', folder)
+      fd.append('context', `uploader=${uploaderName}`)
+
+      try {
+        res = await fetch(
+          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+          { method: 'POST', body: fd }
+        )
+        break // fetch tuvo respuesta — salir del loop (onRetry no es responsabilidad de HTTP errors)
+      } catch (fetchErr) {
+        const msg = fetchErr instanceof Error ? fetchErr.message : 'fetch falló'
+        if (attempt > MAX_RETRIES) {
+          await serverLog('error', 'cloudinary:fetch-error', 'Error de red al conectar con Cloudinary (sin reintentos restantes)', {
+            error:    msg,
+            file:     file.name,
+            attempts: attempt,
+            endpoint: `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+          })
+          throw new Error(`Error de red: ${msg}`)
+        }
+        await serverLog('warn', 'cloudinary:retry', `Error de red — reintentando (intento ${attempt}/${MAX_RETRIES})`, {
+          error:    msg,
+          file:     file.name,
+          attempt,
+          waitMs:   RETRY_DELAY_MS,
+        })
+        onRetry?.()
+        await sleep(RETRY_DELAY_MS)
+      }
     }
+
+    if (!res) throw new Error('Error inesperado: sin respuesta de Cloudinary')
 
     if (!res.ok) {
       const errBody = await res.json().catch(() => ({}))

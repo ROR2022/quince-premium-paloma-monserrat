@@ -85,7 +85,7 @@ export function FotoUploader() {
                   <span className="text-sm text-gray-700 truncate max-w-[200px]">{fp.name}</span>
                   {fp.status === 'success' && <CheckCircle className="w-4 h-4 text-green-500 shrink-0" />}
                   {fp.status === 'error'   && <XCircle     className="w-4 h-4 text-red-500  shrink-0" />}
-                  {(fp.status === 'compressing' || fp.status === 'uploading') && (
+                  {(fp.status === 'compressing' || fp.status === 'uploading' || fp.status === 'retrying') && (
                     <Loader2 className="w-4 h-4 text-coquette-rosa-intenso-500 animate-spin shrink-0" />
                   )}
                 </div>
@@ -99,6 +99,7 @@ export function FotoUploader() {
                 </div>
                 {fp.error && <p className="text-xs text-red-500 mt-1">{fp.error}</p>}
                 {fp.status === 'compressing' && <p className="text-xs text-gray-400 mt-1">Optimizando...</p>}
+                {fp.status === 'retrying'    && <p className="text-xs text-amber-500 mt-1">Reintentando conexión...</p>}
               </div>
             ))}
           </div>

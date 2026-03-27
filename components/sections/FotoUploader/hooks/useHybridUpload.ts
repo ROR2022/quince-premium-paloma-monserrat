@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
 import { compressImage } from '../utils/imageCompression'
-import { validateImageFile, validateCompressedFile } from '../utils/imageValidation'
+import { validateImageFile } from '../utils/imageValidation'
 import { uploadToCloudinary, uploadToLocal, registerPhotoInDB, buildUploadResult } from '../utils/uploadHelpers'
 import { UPLOAD_CONFIG } from '../constants/upload.constants'
 import { serverLog, serializeError, fmtBytes } from '../utils/debugLogger'
@@ -10,7 +10,7 @@ export type UploadStatus = 'idle' | 'uploading' | 'success' | 'error'
 export interface FileProgress {
   name:     string
   progress: number
-  status:   'pending' | 'compressing' | 'uploading' | 'success' | 'error'
+  status:   'pending' | 'compressing' | 'uploading' | 'retrying' | 'success' | 'error'
   error?:   string
 }
 
@@ -85,22 +85,6 @@ export function useHybridUpload() {
         compressed = file // si falla la compresión, usar el original
       }
 
-      // 2b. Validar tamaño post-compresión (límite Vercel 4.5 MB)
-      const postValidation = validateCompressedFile(compressed)
-      if (!postValidation.valid) {
-        await serverLog('warn', 'upload:post-validate-fail', 'Validación post-compresión fallida', {
-          name:  compressed.name,
-          size:  fmtBytes(compressed.size),
-          error: postValidation.error,
-        })
-        updateFileProgress(i, { status: 'error', error: postValidation.error, progress: 100 })
-        continue
-      }
-      await serverLog('info', 'upload:post-validate-ok', 'Validación post-compresión pasada', {
-        name: compressed.name,
-        size: fmtBytes(compressed.size),
-      })
-
       // 3. Subir a Cloudinary (direct upload — sin pasar por Vercel)
       updateFileProgress(i, { status: 'uploading', progress: 50 })
       let cloudinaryResult = null
@@ -113,7 +97,11 @@ export function useHybridUpload() {
       })
 
       try {
-        const results  = await uploadToCloudinary([compressed], uploaderName)
+        const results  = await uploadToCloudinary(
+          [compressed],
+          uploaderName,
+          () => updateFileProgress(i, { status: 'retrying', progress: 50 }),
+        )
         cloudinaryResult = results[0]
         await serverLog('info', 'upload:cloudinary-ok', 'Cloudinary direct upload exitoso', {
           publicId:  cloudinaryResult.publicId,
