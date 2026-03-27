@@ -10,10 +10,12 @@ export const UPLOAD_CONFIG = {
   allowedMimeTypes:  ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'] as string[],
   allowedExtensions: ['.jpg', '.jpeg', '.png', '.webp', '.heic', '.heif'] as string[],
   compression: {
-    /** 2048px = 2x retina en cualquier pantalla mobile/desktop. Produce WebP < 2 MB. */
+    /** 2048px = 2x retina en cualquier pantalla mobile/desktop. */
     maxWidth:  2048,
     maxHeight: 2048,
-    quality:   0.82,
+    /** 0.65: Safari/iOS WebP encoder es ineficiente a calidades altas — produce
+     *  archivos más grandes que el JPEG original. 0.65 garantiza reducción real. */
+    quality:   0.65,
   },
   endpoints: {
     cloudinary: '/api/upload-fotos-cloudinary',

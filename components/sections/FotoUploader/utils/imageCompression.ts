@@ -67,6 +67,23 @@ export async function compressImage(file: File): Promise<File> {
             reject(new Error('No se pudo comprimir la imagen'))
             return
           }
+
+          // Safari/iOS WebP encoder puede producir archivos MÁS grandes que el JPEG
+          // original. Si eso ocurre, devolver el archivo original sin comprimir.
+          if (blob.size >= file.size) {
+            serverLogSync('warn', 'compress:original-kept',
+              'WebP más grande que original — usando archivo original', {
+                originalSize:   fmtBytes(file.size),
+                webpSize:       fmtBytes(blob.size),
+                originalName:   file.name,
+                originalType:   file.type,
+                dimensions:     `${width}×${height}`,
+              }
+            )
+            resolve(file)
+            return
+          }
+
           const compressedName = file.name.replace(/\.[^.]+$/, '.webp')
           const resultFile = new File([blob], compressedName, { type: 'image/webp' })
 
