@@ -111,6 +111,13 @@ const config: Config = {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		keyframes: {
+  			'shake': {
+  				'0%, 100%': { transform: 'translateX(0)' },
+  				'20%':       { transform: 'translateX(-6px)' },
+  				'40%':       { transform: 'translateX(6px)' },
+  				'60%':       { transform: 'translateX(-4px)' },
+  				'80%':       { transform: 'translateX(4px)' },
+  			},
   			'accordion-down': {
   				from: {
   					height: '0'
@@ -130,7 +137,8 @@ const config: Config = {
   		},
   		animation: {
   			'accordion-down': 'accordion-down 0.2s ease-out',
-  			'accordion-up': 'accordion-up 0.2s ease-out'
+  			'accordion-up':   'accordion-up 0.2s ease-out',
+  			'shake':          'shake 0.5s ease-in-out',
   		}
   	}
   },
