@@ -54,7 +54,7 @@ export const premiumDemoData = {
     title: "INVITACIÓN ESPECIAL",
     message: "Acompáñanos a celebrar",
     subtitle: "Mis XV años",
-    blessing: "con la bendición de Dios y mis padres:",
+    blessing: "con la bendición de Dios y el amor de mi familia",
     celebrant: basicDemoData.event.celebrant,
     parents: basicDemoData.event.parents,
     decorativeMessage: "Te esperamos en este día tan especial"

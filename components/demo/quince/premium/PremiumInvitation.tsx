@@ -10,7 +10,7 @@ export function PremiumInvitation() {
 
   return (
     <section 
-      className="py-16 px-4 relative bg-cover bg-center bg-no-repeat min-h-screen"
+      className="py-16 px-4 relative bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: "url('/images/custom/mono1.jpeg')" }}
     >
       {/* Overlay coquette elegante */}
@@ -42,7 +42,11 @@ export function PremiumInvitation() {
         </h2>
 
         {/* Información de padres - Premium */}
-        <div className="my-12 bg-white/95 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-white/50">
+        <div 
+        style={{
+          display:'none'
+        }}
+        className="my-12 bg-white/95 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-white/50">
           <div className="space-y-4">
             <p className="text-primary text-2xl font-medium">
               {premiumDemoData.invitation.parents.father}
